@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sorry</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        background: radial-gradient(
+            ellipse 120% 80% at 50% -20%,
+            rgba(255, 218, 200, 0.45),
+            transparent 55%
+          ),
+          linear-gradient(165deg, #1a1625 0%, #2d2640 45%, #1f1b2e 100%);
+        color: #f4f1f9;
+      }
+
+      .card {
+        text-align: center;
+        padding: 2.5rem 2rem;
+        max-width: 420px;
+        width: calc(100% - 2rem);
+        border-radius: 1.25rem;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(12px);
+        position: relative;
+        z-index: 1;
+      }
+
+      .message {
+        margin: 0 0 1.75rem;
+        font-size: 1.35rem;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        line-height: 1.4;
+        color: #ede8f5;
+      }
+
+      .btn {
+        cursor: pointer;
+        border: none;
+        padding: 0.85rem 1.75rem;
+        font-size: 1rem;
+        font-weight: 600;
+        font-family: inherit;
+        color: #2d2640;
+        background: linear-gradient(145deg, #ffc9a8 0%, #ff9b7b 50%, #e87b6d 100%);
+        border-radius: 999px;
+        box-shadow: 0 4px 14px rgba(232, 123, 109, 0.45),
+          inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 22px rgba(232, 123, 109, 0.5),
+          inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      }
+
+      .btn:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      .btn:focus-visible {
+        outline: 2px solid #ffc9a8;
+        outline-offset: 4px;
+      }
+
+      .btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.65;
+      }
+
+      .gif-wrap {
+        margin: 1.75rem 0 0;
+      }
+
+      .gif-wrap.hidden {
+        display: none;
+      }
+
+      .gif-wrap img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 0.75rem;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+      }
+
+      /* Floating hearts overlay */
+      #heartsLayer {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 50;
+      }
+
+      #heartsLayer .heart {
+        position: absolute;
+        bottom: -2rem;
+        left: var(--hx, 50%);
+        transform: translateX(-50%);
+        color: #ff8a9a;
+        text-shadow: 0 0 12px rgba(255, 120, 140, 0.7);
+        animation: heartRise var(--hdur, 3.5s) ease-out forwards;
+        will-change: transform, opacity;
+      }
+
+      @keyframes heartRise {
+        0% {
+          opacity: 0;
+          transform: translateX(calc(-50% + var(--hdrift, 0px))) translateY(0)
+            rotate(-6deg);
+        }
+        8% {
+          opacity: 0.95;
+        }
+        100% {
+          opacity: 0;
+          transform: translateX(calc(-50% + var(--hdrift-end, 0px)))
+            translateY(calc(-100vh - 6rem)) rotate(8deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="heartsLayer" aria-hidden="true"></div>
+
+    <main class="card">
+      <p class="message">I'm really sorry.</p>
+      <button type="button" id="sorryBtn" class="btn">Click me</button>
+      <figure id="gifWrap" class="gif-wrap hidden" aria-hidden="true">
+        <img
+          src="https://media.tenor.com/nMi95UhfCmkAAAAC/sad-sorry.gif"
+          alt="Stitch holding a sign that says sorry"
+          id="sorryGif"
+          width="220"
+          height="178"
+        />
+      </figure>
+    </main>
+
+    <script>
+      (function () {
+        var btn = document.getElementById("sorryBtn");
+        var gifWrap = document.getElementById("gifWrap");
+        var heartsLayer = document.getElementById("heartsLayer");
+        /** @type {0 | 1 | 2} */
+        var step = 0;
+        var HEART_COUNT = 20;
+
+        function spawnHearts() {
+          var i;
+          var symbols = ["♥", "♥", "♥", "❤️", "💗"];
+          function addOne(idx) {
+            var h = document.createElement("span");
+            h.className = "heart";
+            h.textContent =
+              symbols[Math.floor(Math.random() * symbols.length)];
+            h.style.setProperty(
+              "--hx",
+              Math.round(8 + Math.random() * 84) + "%"
+            );
+            h.style.setProperty(
+              "--hdur",
+              2.6 + Math.random() * 2.2 + "s"
+            );
+            h.style.setProperty(
+              "--hdrift",
+              (Math.random() * 28 - 14).toFixed(1) + "px"
+            );
+            h.style.setProperty(
+              "--hdrift-end",
+              (Math.random() * 100 - 50).toFixed(1) + "px"
+            );
+            h.style.fontSize = (1 * (1 + Math.random() * 1.35)).toFixed(2);
+            heartsLayer.appendChild(h);
+            h.addEventListener("animationend", function () {
+              h.remove();
+            });
+          }
+          for (i = 0; i < HEART_COUNT; i++) {
+            (function (n) {
+              setTimeout(function () {
+                addOne(n);
+              }, n * 45);
+            })(i);
+          }
+        }
+
+        btn.addEventListener("click", function () {
+          if (step === 0) {
+            btn.textContent = "Click me again";
+            step = 1;
+            return;
+          }
+
+          if (step === 1) {
+            gifWrap.classList.remove("hidden");
+            gifWrap.setAttribute("aria-hidden", "false");
+            btn.textContent = "Click again 💛";
+            btn.setAttribute("aria-label", "Show hearts");
+            step = 2;
+            return;
+          }
+
+          if (step === 2) {
+            spawnHearts();
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
